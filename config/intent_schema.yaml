@@ -1,0 +1,43 @@
+# Draft Intent Schema for AppleSupport
+# NOTE: This is a draft taxonomy. It must be refined after running `explore_intents.py` on the actual data.
+
+intents:
+  - name: "device_troubleshooting"
+    description: "Issues related to hardware malfunction, screen damage, battery health, or physical device behavior."
+    escalate_default: false
+    
+  - name: "software_issue"
+    description: "Problems with iOS updates, app crashes, settings, or operating system bugs."
+    escalate_default: false
+    
+  - name: "account_access"
+    description: "Issues related to Apple ID, forgotten passwords, two-factor authentication, or locked accounts."
+    escalate_default: true  # High risk, usually requires human verification
+    
+  - name: "payment_billing"
+    description: "Questions about charges, refunds, Apple Card, Apple Pay, or App Store billing."
+    escalate_default: true
+    
+  - name: "subscription_management"
+    description: "Canceling, upgrading, or querying subscriptions (Apple Music, iCloud+, Apple TV+)."
+    escalate_default: false
+    
+  - name: "repair_status"
+    description: "Checking the status of an ongoing repair or AppleCare+ claim."
+    escalate_default: false
+    
+  - name: "purchase_order"
+    description: "Questions about shipping, tracking, or modifying a recent hardware purchase."
+    escalate_default: false
+    
+  - name: "information_request"
+    description: "General 'how-to' questions, feature inquiries, or compatibility checks."
+    escalate_default: false
+    
+  - name: "complaint"
+    description: "Expressions of extreme dissatisfaction, threats to switch brands, or anger without a clear technical question."
+    escalate_default: true
+    
+  - name: "other"
+    description: "Anything that does not clearly fit into the above categories."
+    escalate_default: true

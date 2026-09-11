@@ -1,0 +1,28 @@
+# Secrets
+.env
+
+# Large datasets and indices
+data/raw/twcs.csv
+twcs.csv
+artifacts/faiss_index.bin
+
+# Python artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+env.bak/
+venv.bak/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# OS files
+.DS_Store
+Thumbs.db

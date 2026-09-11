@@ -1,0 +1,30 @@
+=== RAW DATASET EDA ===
+Total Rows: 2811774
+Columns: ['tweet_id', 'author_id', 'inbound', 'created_at', 'text', 'response_tweet_id', 'in_response_to_tweet_id']
+Missing Values:
+tweet_id                         0
+author_id                        0
+inbound                          0
+created_at                       0
+text                             0
+response_tweet_id          1040629
+in_response_to_tweet_id     794335
+dtype: int64
+
+=== INBOUND/OUTBOUND DISTRIBUTION ===
+inbound
+True     0.54693
+False    0.45307
+
+=== TOP 10 BRANDS (OUTBOUND) ===
+author_id
+AmazonHelp         169840
+AppleSupport       106860
+Uber_Support        56270
+SpotifyCares        43265
+Delta               42253
+Tesco               38573
+AmericanAir         36764
+TMobileHelp         34317
+comcastcares        33031
+British_Airways     29361
