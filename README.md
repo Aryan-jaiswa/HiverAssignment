@@ -5,12 +5,39 @@ A robust, defense-in-depth ML pipeline for automating customer support on Twitte
 ## 1. Project Overview & Problem Statement
 This project addresses the challenge of automating Twitter customer support for `AppleSupport`. The primary problem is balancing **Automation Rate** with **Safety**. Large Language Models (LLMs) hallucinate refund policies or dangerous technical advice when confused. This architecture solves that by wrapping the LLM in a rigid deterministic Escalation Engine and grounding its responses in retrieved historical FAISS evidence.
 
-## 2. Architecture Diagram
-```
-Customer Message -> Embedding Classifier -> Intent + Confidence -> 
-FAISS Retrieval -> Historical Evidence -> Escalation Pre-checks -> 
-(If Safe) Gemini LLM Generation -> Validation -> Final Reply
-(If Unsafe) -> ESCALATE TO HUMAN
+## 2. System Architecture & Flow Diagram
+
+### System Architecture
+The system is built with a modular architecture to ensure safety, traceability, and maintainability:
+- **`src/intent`**: Handles embedding incoming messages and classifying intents using a Sentence-Transformers centroid approach (`all-MiniLM-L6-v2`).
+- **`src/retrieval`**: Manages the FAISS index to retrieve similar historical customer interactions as evidence for grounding.
+- **`src/escalation`**: The core safety mechanism containing rigid, deterministic rules to detect unsafe scenarios (e.g., low confidence, sensitive topics) and escalate to a human agent.
+- **`src/generation`**: Interacts with the LLM (Gemini 1.5 Pro) using a structured prompt that includes the customer message and retrieved evidence.
+- **`src/pipeline.py`**: Orchestrates the entire flow from input to final response, integrating all the modules above.
+- **`src/api.py` & `src/ui.py`**: Provide a FastAPI backend and a Streamlit frontend for interacting with the agent.
+
+### Flow Diagram
+
+```mermaid
+flowchart TD
+    Start([Customer Message]) --> IntentClassifier[Embedding Classifier]
+    IntentClassifier --> ConfidenceCheck{Confidence > Threshold?}
+    
+    ConfidenceCheck -->|No| HumanEscalation[ESCALATE TO HUMAN]
+    ConfidenceCheck -->|Yes| FAISS[FAISS Retrieval]
+    
+    FAISS --> Evidence[Historical Evidence Retrieved]
+    Evidence --> PreChecks[Escalation Pre-checks]
+    
+    PreChecks -->|Unsafe| HumanEscalation
+    PreChecks -->|Safe| LLM[Gemini LLM Generation]
+    
+    LLM --> Validation[Response Validation]
+    Validation -->|Failed| HumanEscalation
+    Validation -->|Passed| FinalReply([Final Reply to Customer])
+
+    style HumanEscalation fill:#ff4d4d,stroke:#333,stroke-width:2px,color:#fff
+    style FinalReply fill:#4CAF50,stroke:#333,stroke-width:2px,color:#fff
 ```
 
 ## 3. Dataset & Preprocessing
