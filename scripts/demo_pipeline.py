@@ -5,6 +5,7 @@ import json
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+# pyrefly: ignore [missing-import]
 from src.pipeline import SupportAgent
 
 def main():
