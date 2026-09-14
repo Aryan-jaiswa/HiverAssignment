@@ -22,3 +22,6 @@ COPY . .
 
 EXPOSE 8000
 EXPOSE 8501
+
+# Run the Streamlit UI by default (Render will inject the $PORT variable)
+CMD sh -c "streamlit run src/ui.py --server.port=${PORT:-8501} --server.address=0.0.0.0"
