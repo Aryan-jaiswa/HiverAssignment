@@ -2,6 +2,9 @@ import numpy as np
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 import yaml
+from pathlib import Path
+
+PROJECT_ROOT = Path(__file__).parent.parent.parent.resolve()
 
 class EmbeddingClassifier:
     """
@@ -37,11 +40,12 @@ class EmbeddingClassifier:
                 
             self.centroids[label] = centroid
 
-    def fit_zero_shot(self, config_path: str = "config/intent_schema.yaml"):
+    def fit_zero_shot(self, config_path: str = None):
         """
         Alternative: Zero-shot fitting using just the taxonomy descriptions.
         This is used if there is no annotated training data available.
         """
+        config_path = config_path or str(PROJECT_ROOT / "config" / "intent_schema.yaml")
         with open(config_path, "r") as f:
             schema = yaml.safe_load(f)
             

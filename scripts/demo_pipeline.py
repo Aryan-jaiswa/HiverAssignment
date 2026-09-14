@@ -1,7 +1,11 @@
 import os
+import sys
 import json
+# pyrefly: ignore [missing-import]
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from src.pipeline import SupportAgent
-from src.generation.provider import GeminiProvider
 
 def main():
     print("=== AppleSupport Pipeline Demo ===")

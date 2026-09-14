@@ -2,11 +2,19 @@ import os
 import json
 from abc import ABC, abstractmethod
 from dotenv import load_dotenv
+from pydantic import BaseModel, ValidationError
+import logging
 
 from google import genai
 from google.genai import types
 
 load_dotenv()
+logger = logging.getLogger(__name__)
+
+class LLMResponse(BaseModel):
+    needs_escalation: bool
+    reply: str
+    reason: str
 
 class LLMProvider(ABC):
     @abstractmethod
@@ -21,14 +29,10 @@ class GeminiProvider(LLMProvider):
         self.model_name = model_name
         api_key = os.getenv("GEMINI_API_KEY")
         if not api_key:
-            self.client = None
-        else:
-            self.client = genai.Client(api_key=api_key)
+            raise ValueError("GEMINI_API_KEY environment variable not set. Please create a .env file.")
+        self.client = genai.Client(api_key=api_key)
             
     def generate(self, prompt: str) -> dict:
-        if not self.client:
-            raise ValueError("GEMINI_API_KEY environment variable not set. Please create a .env file.")
-            
         try:
             response = self.client.models.generate_content(
                 model=self.model_name,
@@ -38,17 +42,20 @@ class GeminiProvider(LLMProvider):
                 )
             )
             
-            # Extract JSON text
             text = response.text
-            # Sometimes LLMs wrap json in markdown blocks, clean it up
             if text.startswith("```json"):
                 text = text.strip("```json").strip("```").strip()
             
-            return json.loads(text)
+            data = json.loads(text)
+            validated = LLMResponse(**data)
+            return validated.model_dump()
         except Exception as e:
-            # Safely handle API failures or JSON parsing errors
-            print(f"[LLM Error]: {e}")
-            return {}
+            logger.error(f"[LLM Error]: {e}")
+            return {
+                "needs_escalation": True,
+                "reply": "",
+                "reason": "LLM generation failed; human review required."
+            }
 
 class MockLLMProvider(LLMProvider):
     """Used for testing without hitting the API."""

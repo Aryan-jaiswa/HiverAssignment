@@ -1,0 +1,102 @@
+[
+  {
+    "test_id": 1,
+    "message": "My iPhone 15 keeps disconnecting from WiFi every few minutes. I've restarted it but the problem continues.",
+    "intent": "software_issue",
+    "confidence": 0.2278415858745575,
+    "top_similarity": 0.7028478384017944,
+    "decision": "AUTO_HANDLE",
+    "reason": "The customer is experiencing WiFi disconnection issues. Based on historical evidence, AppleSupport asks for the iOS version and whether the issue happens across all networks or just one.",
+    "has_reply": true
+  },
+  {
+    "test_id": 2,
+    "message": "My iPhone battery is draining really fast even when I'm barely using it.",
+    "intent": "device_troubleshooting",
+    "confidence": 0.34152984619140625,
+    "top_similarity": 0.8410637974739075,
+    "decision": "AUTO_HANDLE",
+    "reason": "The customer's battery drain issue is directly addressed in historical evidence, where AppleSupport empathetically acknowledges the issue and asks for device and software details via DM or provides a help link.",
+    "has_reply": true
+  },
+  {
+    "test_id": 3,
+    "message": "My AirPods are connected to my iPhone but I can't hear any sound.",
+    "intent": "repair_status",
+    "confidence": 0.20079487562179565,
+    "top_similarity": 0.7441225051879883,
+    "decision": "AUTO_HANDLE",
+    "reason": "The customer's query directly matches Example 1, where AirPods are connected but not playing audio. The response asks the clarifying question as demonstrated in the evidence.",
+    "has_reply": true
+  },
+  {
+    "test_id": 4,
+    "message": "How do I reset my Apple ID password?",
+    "intent": "account_access",
+    "confidence": 0.6139369010925293,
+    "top_similarity": 0.8478647470474243,
+    "decision": "AUTO_HANDLE",
+    "reason": "The customer's question is directly addressed in historical evidence with clear steps and a link.",
+    "has_reply": true
+  },
+  {
+    "test_id": 5,
+    "message": "iphone has been locked temporarily what can i do to unlock it?",
+    "intent": "account_access",
+    "confidence": 0.38650181889533997,
+    "top_similarity": 0.7027957439422607,
+    "decision": "AUTO_HANDLE",
+    "reason": "Based on Example 1, when a customer asks how to unlock a locked iPhone without specifying the lock type, we ask for clarification to determine if it is Activation Locked or carrier locked.",
+    "has_reply": true
+  },
+  {
+    "test_id": 6,
+    "message": "I need to speak with a human agent. I've already tried everything.",
+    "intent": "information_request",
+    "confidence": 0.20545724034309387,
+    "top_similarity": 0.5530199408531189,
+    "decision": "ESCALATE",
+    "reason": "Explicit human request detected.",
+    "has_reply": false
+  },
+  {
+    "test_id": 7,
+    "message": "Someone has accessed my Apple account and changed my payment details.",
+    "intent": "account_access",
+    "confidence": 0.5132988691329956,
+    "top_similarity": 0.6936882138252258,
+    "decision": "ESCALATE",
+    "reason": "Message contains high-risk security/financial keywords.",
+    "has_reply": false
+  },
+  {
+    "test_id": 8,
+    "message": "I don't recognize this payment on my account.",
+    "intent": "payment_billing",
+    "confidence": 0.4744092524051666,
+    "top_similarity": 0.6500687003135681,
+    "decision": "ESCALATE",
+    "reason": "Message contains high-risk security/financial keywords.",
+    "has_reply": false
+  },
+  {
+    "test_id": 9,
+    "message": "Everything is broken and nothing works.",
+    "intent": "device_troubleshooting",
+    "confidence": 0.3777000308036804,
+    "top_similarity": 0.5904754996299744,
+    "decision": "ESCALATE",
+    "reason": "Low intent confidence (0.38) and weak retrieval evidence (0.59).",
+    "has_reply": false
+  },
+  {
+    "test_id": 10,
+    "message": "Still not working.",
+    "intent": "repair_status",
+    "confidence": 0.32078707218170166,
+    "top_similarity": 0.5978062152862549,
+    "decision": "ESCALATE",
+    "reason": "Low intent confidence (0.32) and weak retrieval evidence (0.60).",
+    "has_reply": false
+  }
+]

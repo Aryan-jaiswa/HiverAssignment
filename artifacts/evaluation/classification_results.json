@@ -1,0 +1,128 @@
+{
+  "accuracy": 1.0,
+  "macro_f1": 1.0,
+  "weighted_f1": 1.0,
+  "per_class_f1": {
+    "account_access": 1.0,
+    "complaint": 1.0,
+    "device_troubleshooting": 1.0,
+    "information_request": 1.0,
+    "payment_billing": 1.0,
+    "purchase_order": 1.0,
+    "repair_status": 1.0,
+    "software_issue": 1.0,
+    "subscription_management": 1.0
+  },
+  "labels": [
+    "account_access",
+    "complaint",
+    "device_troubleshooting",
+    "information_request",
+    "payment_billing",
+    "purchase_order",
+    "repair_status",
+    "software_issue",
+    "subscription_management"
+  ],
+  "confusion_matrix": [
+    [
+      12,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      20,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      4,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      5,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      3,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      73,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      72,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      10
+    ]
+  ]
+}

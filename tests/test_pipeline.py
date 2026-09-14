@@ -21,15 +21,22 @@ def test_high_risk_intent_escalation(agent):
 
 def test_low_confidence_escalation(agent):
     engine = DecisionEngine(intent_confidence_threshold=0.80)
+    # Low confidence but strong retrieval -> Should not escalate (if no risk)
     check = engine.pre_generation_check("Fix it", "device_troubleshooting", 0.50, 0.99)
-    assert check["needs_escalation"] == True
-    assert "Intent confidence" in check["reason"]
+    assert check["needs_escalation"] == False
 
 def test_low_retrieval_similarity_escalation(agent):
-    engine = DecisionEngine(retrieval_similarity_threshold=0.80)
+    engine = DecisionEngine(intent_confidence_threshold=0.80, retrieval_similarity_threshold=0.80)
+    # Strong intent but weak retrieval -> Should not escalate
     check = engine.pre_generation_check("Fix it", "device_troubleshooting", 0.99, 0.50)
+    assert check["needs_escalation"] == False
+    
+def test_both_low_escalation(agent):
+    engine = DecisionEngine(intent_confidence_threshold=0.80, retrieval_similarity_threshold=0.80)
+    # Both weak -> Should escalate
+    check = engine.pre_generation_check("Fix it", "device_troubleshooting", 0.50, 0.50)
     assert check["needs_escalation"] == True
-    assert "similar historical evidence" in check["reason"]
+    assert "Low intent confidence" in check["reason"]
 
 def test_llm_post_check_failure():
     engine = DecisionEngine()

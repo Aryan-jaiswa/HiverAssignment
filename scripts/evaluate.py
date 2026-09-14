@@ -1,7 +1,10 @@
 import os
+import sys
 import json
 import pandas as pd
 import joblib
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from src.pipeline import SupportAgent
 from src.generation.provider import GeminiProvider

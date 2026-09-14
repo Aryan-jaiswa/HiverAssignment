@@ -2,16 +2,22 @@ import faiss
 import numpy as np
 from typing import List, Dict, Any
 from sentence_transformers import SentenceTransformer
+from pathlib import Path
 
 from src.retrieval.index import load_index_and_metadata
+
+PROJECT_ROOT = Path(__file__).parent.parent.parent.resolve()
 
 class RetrievalSystem:
     """
     Wrapper around the FAISS index and embedding model to easily query historical cases.
     """
-    def __init__(self, index_path: str = "artifacts/retrieval.index", 
-                 meta_path: str = "artifacts/retrieval_metadata.json",
+    def __init__(self, index_path: str = None, 
+                 meta_path: str = None,
                  model_name: str = "all-MiniLM-L6-v2"):
+        
+        index_path = index_path or str(PROJECT_ROOT / "artifacts" / "retrieval.index")
+        meta_path = meta_path or str(PROJECT_ROOT / "artifacts" / "retrieval_metadata.json")
         
         self.index, self.metadata = load_index_and_metadata(index_path, meta_path)
         self.model = SentenceTransformer(model_name)
