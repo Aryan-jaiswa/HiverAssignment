@@ -1,20 +1,34 @@
-# AppleSupport AI Agent
+#  AppleSupport AI Agent
 
-A robust, defense-in-depth ML pipeline for automating customer support on Twitter. Built for the Hiver Take-Home Assignment.
+![Status](https://img.shields.io/badge/Status-Production%20Ready-success)
+![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)
+![Docker](https://img.shields.io/badge/Docker-Supported-2496ED.svg)
 
-## 1. Project Overview & Problem Statement
-This project addresses the challenge of automating Twitter customer support for `AppleSupport`. The primary problem is balancing **Automation Rate** with **Safety**. Large Language Models (LLMs) hallucinate refund policies or dangerous technical advice when confused. This architecture solves that by wrapping the LLM in a rigid deterministic Escalation Engine and grounding its responses in retrieved historical FAISS evidence.
+A robust, defense-in-depth ML pipeline for automating customer support on Twitter. Built as a production-grade, containerized AI agent.
 
-## 2. System Architecture & Flow Diagram
+## 🚀 Overview & Problem Statement
 
-### System Architecture
+This project tackles the challenge of automating Twitter customer support for `AppleSupport`. The primary problem in AI customer service is balancing **Automation Rate** with **Safety**. Large Language Models (LLMs) are prone to hallucinating policies, making unauthorized refund promises, or giving dangerous technical advice when confused.
+
+**The Solution:** This architecture wraps a generative LLM in a rigid deterministic **Escalation Engine** and grounds its responses using Retrieval-Augmented Generation (RAG) backed by a FAISS index of verified historical cases.
+
+## ✨ Recent Updates
+- **Production-Readiness**: Fully containerized with `Dockerfile` and `docker-compose.yml`. 
+- **Enhanced Safety Rails**: Graceful fallback mechanisms handle API rate limits (e.g. Gemini Free-Tier) by safely self-escalating to human agents.
+- **Glassmorphic UI**: A completely redesigned, Apple-esque Streamlit frontend built for high aesthetic engagement.
+- **Contextual Transparency**: The UI replaces raw technical ML signals with intuitive, human-readable explanations of *why* decisions were made.
+
+---
+
+## 🏗 System Architecture & Workflow
+
 The system is built with a modular architecture to ensure safety, traceability, and maintainability:
-- **`src/intent`**: Handles embedding incoming messages and classifying intents using a Sentence-Transformers centroid approach (`all-MiniLM-L6-v2`).
-- **`src/retrieval`**: Manages the FAISS index to retrieve similar historical customer interactions as evidence for grounding.
-- **`src/escalation`**: The core safety mechanism containing rigid, deterministic rules to detect unsafe scenarios (e.g., low confidence, sensitive topics) and escalate to a human agent.
-- **`src/generation`**: Interacts with the LLM (Gemini 1.5 Pro) using a structured prompt that includes the customer message and retrieved evidence.
-- **`src/pipeline.py`**: Orchestrates the entire flow from input to final response, integrating all the modules above.
-- **`src/api.py` & `src/ui.py`**: Provide a FastAPI backend and a Streamlit frontend for interacting with the agent.
+
+1. **`src/intent` (Classification Layer)**: Embeds incoming messages and classifies intents using a zero-shot Sentence-Transformers centroid approach (`all-MiniLM-L6-v2`).
+2. **`src/retrieval` (Evidence Grounding)**: Manages a FAISS index to retrieve highly-similar, verified historical customer interactions to ground the LLM.
+3. **`src/escalation` (Safety Guardrails)**: The core deterministic safety engine. It strictly enforces thresholds (e.g., low confidence, explicit human requests, high-risk financial keywords) and escalates unsafe scenarios to a human agent.
+4. **`src/generation` (Response Generation)**: Interacts with the LLM (Gemini 1.5 Pro/Flash) via a structured, heavily constrained prompt injection framework.
+5. **`src/pipeline.py` (Orchestration)**: Integrates the entire flow from user input to final autonomous-handle or human-escalation decisions.
 
 ### Flow Diagram
 
@@ -32,7 +46,7 @@ flowchart TD
     PreChecks -->|Unsafe| HumanEscalation
     PreChecks -->|Safe| LLM[Gemini LLM Generation]
     
-    LLM --> Validation[Response Validation]
+    LLM --> Validation[Response Validation / Rate Limit Checks]
     Validation -->|Failed| HumanEscalation
     Validation -->|Passed| FinalReply([Final Reply to Customer])
 
@@ -40,76 +54,66 @@ flowchart TD
     style FinalReply fill:#4CAF50,stroke:#333,stroke-width:2px,color:#fff
 ```
 
-## 3. Dataset & Preprocessing
-- **Brand Selection**: `AppleSupport` was chosen due to its high volume and diverse intent range (hardware, software, billing) in the dataset.
-- **Acquisition**: Download the `twcs.csv` dataset from [Kaggle](https://www.kaggle.com/datasets/thoughtvector/customer-support-on-twitter). Place it at `data/raw/twcs.csv`.
-- **Preprocessing**: `scripts/build_dataset.py` cleans text, strips URLs/usernames, and structures the data into `customer_message` and `support_reply` pairs.
-- **Leakage Prevention**: Train/Test splitting is strictly enforced at the **conversation level**, preventing related messages in a single thread from cross-contaminating the evaluation sets.
+---
 
-## 4. Intent Taxonomy & Golden Set
-A 10-category taxonomy (e.g., `device_troubleshooting`, `account_access`) was built. A 200-example Golden Evaluation Set was sampled entirely from the isolated test set to ensure rigorous zero-shot evaluation.
+## 🛠 Tech Stack
 
-## 5. Baselines vs Main System
-- **Baselines**: Implemented Majority Class and TF-IDF + Logistic Regression baselines.
-- **Main Classifier**: `all-MiniLM-L6-v2` Sentence-Transformers centroid classifier.
-- **Retrieval**: `faiss-cpu` exact inner-product search over historical reference sets.
-- **Generation**: Gemini 1.5 Pro via an abstract provider interface.
+- **ML & NLP**: `sentence-transformers`, `faiss-cpu`, `scikit-learn`, `numpy`, `pandas`
+- **LLM Integration**: `google-generativeai` (Gemini API)
+- **Backend**: `FastAPI`, `Uvicorn`
+- **Frontend**: `Streamlit` (with custom glassmorphic CSS)
+- **Deployment**: Docker, Docker Compose
+- **Testing**: `pytest`
 
-## 6. Evaluation & Real Results
-*(Placeholder metrics to be populated by the evaluator upon running the scripts)*
-- **Classification Macro F1**: `[METRIC]`
-- **Safe Automation Rate**: `[METRIC]`
-- **Human-LLM Agreement (Cohen's Kappa)**: `[METRIC]`
+---
 
-## 7. Misleading Headline Metrics & Limitations
-A 90% Accuracy metric is dangerously misleading in customer support. If the model predicts "Troubleshooting" for every case, it misses critical 2% "Billing" complaints. See `docs/misleading_numbers.md` for a comprehensive critique of vanity metrics. 
-**Limitations**: The system struggles with multi-intent queries and cannot answer novel questions missing from the FAISS index.
+## 📦 Deployment & Setup
 
-## 8. Project Structure
-- `src/`: Core ML, API, and Evaluation code.
-- `scripts/`: Execution scripts for building indices and evaluating.
-- `tests/`: Pytest suite covering all logic.
-- `docs/`: Engineering Decision Log and Reports.
-- `artifacts/`: JSON metric outputs and failure analyses.
+The system is fully containerized and production-ready.
 
-## 9. Setup Instructions
-1. Install Python 3.10+
-2. `pip install -r requirements.txt`
-3. Copy `.env.example` to `.env` and add your `GEMINI_API_KEY`.
-4. Place the Kaggle dataset at `data/raw/twcs.csv`.
+### Prerequisites
+- Docker and Docker Compose installed.
+- A Gemini API Key from Google AI Studio.
 
-## 10. How to Reproduce Results (Under 15 Minutes)
+### Quick Start (Docker)
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/Aryan-jaiswa/HiverAssignment.git
+   cd HiverAssignment
+   ```
+2. Create a `.env` file from the template and add your API key:
+   ```bash
+   cp .env.example .env
+   # Edit .env and insert GEMINI_API_KEY="your_api_key_here"
+   ```
+3. Spin up the cluster:
+   ```bash
+   docker-compose up -d --build
+   ```
+   - **Streamlit UI**: Available at `http://localhost:8501`
+   - **FastAPI Backend**: Available at `http://localhost:8000`
+
+### Local Development Setup
+If you prefer running natively without Docker:
 ```bash
-# 1. Build the dataset and train/test splits
-python scripts/build_dataset.py
+# 1. Install dependencies
+pip install -r requirements.txt
 
-# 2. Extract Golden Set and Intents
-python scripts/explore_intents.py
-python scripts/sample_golden_set.py
+# 2. Run the Test Suite
+pytest tests/
 
-# 3. Build FAISS Index
-python scripts/build_index.py
-
-# 4. Generate Human Evaluation Sample (Annotate it!)
-python scripts/sample_human_eval.py
-
-# 5. Run the Master Evaluation
-python scripts/evaluate.py
-```
-Check `artifacts/evaluation/` for all final metrics.
-
-## 11. How to Run Demo / API
-**API (FastAPI)**:
-```bash
-uvicorn src.api:app --reload
+# 3. Start the UI
+streamlit run src/ui.py
 ```
 
-**UI (Streamlit)**:
-```bash
-streamlit run src.ui.py
-```
+---
 
-## 12. Testing
-```bash
-pytest
-```
+## 📊 Dataset, Training & Evaluation
+
+1. **Brand Selection**: `AppleSupport` chosen from the [Kaggle TWCS dataset](https://www.kaggle.com/datasets/thoughtvector/customer-support-on-twitter).
+2. **Leakage Prevention**: Train/Test splitting strictly enforced at the **conversation level**.
+3. **Intent Taxonomy**: 10-category taxonomy established for rigorous zero-shot evaluation against an isolated Golden Set.
+4. **Metrics vs Reality**: We vehemently reject vanity metrics (e.g., 90% accuracy). A model scoring 90% by predicting "Troubleshooting" for everything fails catastrophically on the 2% of "Billing" complaints. See `docs/misleading_numbers.md` for a comprehensive critique.
+
+*(Check `artifacts/evaluation/` for metric outputs generated by the evaluation suite).*
